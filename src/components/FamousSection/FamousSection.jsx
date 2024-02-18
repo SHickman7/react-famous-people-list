@@ -6,6 +6,9 @@ function FamousSection() {
   let [famousPersonName, setPersonName] = useState('');
   let [famousPersonRole, setPersonRole] = useState('');
   let [famousPeopleArray, setPeopleArray] = useState([]);
+  const [newFamousPersonName, setNewFamousPersonName] = useState('');
+  const [newFamousPersonRole, setNewFamousPersonRole] = useState('');
+
 
   // TODO: on load, call the fetchPeople() function
 
@@ -43,6 +46,25 @@ function FamousSection() {
     
     // TODO: create POST request to add this new person to the database
 
+    axios({
+      method: 'POST',
+      url: '/api/people',
+      data: {
+        name: newFamousPersonName,
+        role: newFamousPersonRole 
+      }
+    })
+    .then(response => {
+      console.log('Full response from server:', response);
+      setNewFamousPersonName('');
+      setNewFamousPersonRole('');
+      fetchPeople();
+    })
+    .catch(error =>{
+      console.log('Received an error from the server', error);
+      }
+      )
+
     // HINT: the server is expecting a person object 
     //       with a `name` and a `role` property
   
@@ -53,9 +75,9 @@ function FamousSection() {
       <section className="new-person-section">
         <form onSubmit={addPerson}>
           <label htmlFor="name-input">Name:</label>
-          <input id="name-input" onChange={e => setPersonName(e.target.value)} />
+          <input id="name-input" value={newFamousPersonName} onChange={e => setNewFamousPersonName(e.target.value)} placeholder='Name' />
           <label htmlFor="role-input">Famous for:</label>
-          <input id="role-input" onChange={e => setPersonRole(e.target.value)} />
+          <input id="role-input" value={newFamousPersonRole} onChange={e => setNewFamousPersonRole(e.target.value)} placeholder='Role' />
           <button type="submit">Done</button>
         </form>
         <p>
