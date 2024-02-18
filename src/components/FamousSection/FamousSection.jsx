@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import './FamousSection.css';
 
 function FamousSection() {
@@ -9,8 +10,32 @@ function FamousSection() {
   // TODO: on load, call the fetchPeople() function
 
   const fetchPeople = () => {
+    axios({
+      method: 'GET',
+      url: '/api/people'
+    })
+    .then(
+      response => {
+        console.log('The full response from server', response);
+        console.log('The data array we are looking for in response from server', response.data);
+        setPeopleArray(response.data);
+      }
+    )
+    .catch(
+      error => {
+        console.log('Received an error from the server', error);
+      }
+    )
     // TODO: fetch the list of people from the server
   }
+ 
+
+  useEffect(
+    fetchPeople, []
+  );
+
+
+
 
   const addPerson = (evt) => {
     evt.preventDefault();
@@ -24,6 +49,7 @@ function FamousSection() {
   }
 
     return (
+      <>
       <section className="new-person-section">
         <form onSubmit={addPerson}>
           <label htmlFor="name-input">Name:</label>
@@ -33,12 +59,14 @@ function FamousSection() {
           <button type="submit">Done</button>
         </form>
         <p>
-          {famousPersonName} is famous for "{famousPersonRole}".
+          {/* {famousPersonName} is famous for "{famousPersonRole}". */}
         </p>
-        <ul>
           {/* TODO: Render the list of famous people */}
-        </ul>
+          {famousPeopleArray.map(people => (
+            <li key={people.id}>{people.name} is famous for {people.role}</li>
+          ))}
       </section>
+      </>
     );
 }
 
